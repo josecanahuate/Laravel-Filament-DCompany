@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\Personal\Resources;
 
-use App\Filament\Resources\TimesheetResource\Pages;
-use App\Filament\Resources\TimesheetResource\RelationManagers;
+use App\Filament\Personal\Resources\TimesheetResource\Pages;
+use App\Filament\Personal\Resources\TimesheetResource\RelationManagers;
 use App\Models\Timesheet;
 use Filament\Forms;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -14,39 +13,44 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Tables\Filters\SelectFilter;
+use Illuminate\Support\Facades\Auth;
 
 class TimesheetResource extends Resource
 {
     protected static ?string $model = Timesheet::class;
+
+    public static function getEloquentQuery(): Builder
+    {
+     return parent::getEloquentQuery()->where('user_id', Auth::user()->id)->orderBy('id', 'desc');
+    }
+
     protected static ?string $navigationLabel = 'Timesheet';
-    protected static ?string $navigationGroup = 'Employee Management';
-    protected static ?int $navigationSort = 2;
+    #protected static ?string $navigationGroup = 'Employee Management';
+    #protected static ?int $navigationSort = 2;
 
     protected static ?string $navigationIcon = 'heroicon-o-table-cells';
 
-    public static function form(Form $form): Form
+   public static function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                Forms\Components\Select::make('calendar_id')
-                    ->relationship(name: 'calendar', titleAttribute: 'name')
-                    ->required(),
-                Forms\Components\Select::make('user_id')
-                    ->relationship(name: 'user', titleAttribute: 'name')
-                    ->required(),
-                Forms\Components\Select::make('type')
-                    ->options([
-                        'work' => 'Working',
-                        'pause' => 'In Pause',
-                    ]),
-                Forms\Components\DateTimePicker::make('day_in')
-                    ->required(),
-                Forms\Components\DateTimePicker::make('day_out')
-                    ->required(),
-            ]);
+    return $form
+        ->schema([
+            Forms\Components\Select::make('calendar_id')
+                ->relationship(name: 'calendar', titleAttribute: 'name')
+                ->required(),
+            Forms\Components\Select::make('type')
+                ->options([
+                    'work' => 'Working',
+                    'pause' => 'In Pause',
+                ]),
+            Forms\Components\DateTimePicker::make('day_in')
+                ->required(),
+            Forms\Components\DateTimePicker::make('day_out')
+                ->required(),
+        ]);
     }
 
-    public static function table(Table $table): Table
+
+ public static function table(Table $table): Table
     {
         return $table
             ->columns([
@@ -92,6 +96,7 @@ class TimesheetResource extends Resource
                 ]),
             ]);
     }
+
 
     public static function getRelations(): array
     {

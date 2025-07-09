@@ -2,11 +2,10 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\TimesheetResource\Pages;
-use App\Filament\Resources\TimesheetResource\RelationManagers;
-use App\Models\Timesheet;
+use App\Filament\Resources\HolidayResource\Pages;
+use App\Filament\Resources\HolidayResource\RelationManagers;
+use App\Models\Holiday;
 use Filament\Forms;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -15,14 +14,14 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Tables\Filters\SelectFilter;
 
-class TimesheetResource extends Resource
+class HolidayResource extends Resource
 {
-    protected static ?string $model = Timesheet::class;
-    protected static ?string $navigationLabel = 'Timesheet';
+    protected static ?string $model = Holiday::class;
+    protected static ?string $navigationLabel = 'Holiday';
     protected static ?string $navigationGroup = 'Employee Management';
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 4;
+    protected static ?string $navigationIcon = 'heroicon-o-calendar-days';
 
-    protected static ?string $navigationIcon = 'heroicon-o-table-cells';
 
     public static function form(Form $form): Form
     {
@@ -36,12 +35,11 @@ class TimesheetResource extends Resource
                     ->required(),
                 Forms\Components\Select::make('type')
                     ->options([
-                        'work' => 'Working',
-                        'pause' => 'In Pause',
+                        'decline' => 'Decline',
+                        'aproved' => 'Aproved',
+                        'pending' => 'Pending',
                     ]),
-                Forms\Components\DateTimePicker::make('day_in')
-                    ->required(),
-                Forms\Components\DateTimePicker::make('day_out')
+                Forms\Components\DatePicker::make('day')
                     ->required(),
             ]);
     }
@@ -56,16 +54,18 @@ class TimesheetResource extends Resource
                 Tables\Columns\TextColumn::make('user.name')
                     ->searchable()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('day')
+                    ->date()
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('type')
+                    ->badge()
+                       ->color(fn (string $state): string => match ($state) {
+                        'decline' => 'danger',
+                        'aproved' => 'success',
+                        'pending' => 'gray',
+                        })
                     ->searchable(),
-                Tables\Columns\TextColumn::make('day_in')
-                    ->dateTime()
-                    ->searchable()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('day_out')
-                    ->dateTime()
-                    ->searchable()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -78,8 +78,9 @@ class TimesheetResource extends Resource
             ->filters([
                 SelectFilter::make('type')
                 ->options([
-                    'work' => 'Working',
-                    'pause' => 'In Pause',
+                    'decline' => 'Decline',
+                    'aproved' => 'Aproved',
+                    'pending' => 'Pending',
                 ])
             ])
             ->actions([
@@ -103,9 +104,9 @@ class TimesheetResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListTimesheets::route('/'),
-            'create' => Pages\CreateTimesheet::route('/create'),
-            'edit' => Pages\EditTimesheet::route('/{record}/edit'),
+            'index' => Pages\ListHolidays::route('/'),
+            'create' => Pages\CreateHoliday::route('/create'),
+            'edit' => Pages\EditHoliday::route('/{record}/edit'),
         ];
     }
 }

@@ -18,7 +18,6 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Illuminate\Support\Collection;
-
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
