@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\TimesheetResource\Pages;
 use App\Filament\Resources\TimesheetResource\RelationManagers;
+use App\Imports\MyTimesheetImport;
 use App\Models\Timesheet;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
@@ -14,6 +15,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Tables\Filters\SelectFilter;
+use pxlrbt\FilamentExcel\Exports\ExcelExport;
 
 class TimesheetResource extends Resource
 {
@@ -53,6 +55,10 @@ class TimesheetResource extends Resource
                 Tables\Columns\TextColumn::make('calendar.name')
                     ->searchable()
                     ->sortable(),
+                /* Tables\Columns\TextColumn::make('user.id')
+                    ->label('User ID')
+                    ->searchable()
+                    ->sortable(), */
                 Tables\Columns\TextColumn::make('user.name')
                     ->searchable()
                     ->sortable(),

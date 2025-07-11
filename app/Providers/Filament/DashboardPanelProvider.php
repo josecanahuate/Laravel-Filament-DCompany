@@ -6,6 +6,8 @@ use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\MenuItem;
+use App\Filament\Pages\Settings;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
@@ -60,6 +62,18 @@ class DashboardPanelProvider extends PanelProvider
             PanelRoles::make()
             ->roleToAssign('super_admin')
             ->restrictedRoles(['super_admin'])
+            ])
+            //nuevo item en img/icono topbar
+            ->userMenuItems([
+                MenuItem::make()
+                    ->label('Personal')
+                    ->url('/personal')
+                    ->icon('heroicon-o-cog-6-tooth')
+                    ->visible(function (): bool {
+                    return optional(auth()->user())->hasAnyRole([
+                        'super_admin',
+                    ]) ?? false;
+                    })
             ]);
     }
 }
