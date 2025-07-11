@@ -7,7 +7,6 @@ use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\MenuItem;
-use App\Filament\Pages\Settings;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
