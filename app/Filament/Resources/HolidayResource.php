@@ -22,6 +22,11 @@ class HolidayResource extends Resource
     protected static ?int $navigationSort = 4;
     protected static ?string $navigationIcon = 'heroicon-o-calendar-days';
 
+    //badge en el sidebar
+    public static function getNavigationBadge(): ?string
+    {
+        return parent::getEloquentQuery()->where('type', 'pending')->count();
+    }
 
     public static function form(Form $form): Form
     {

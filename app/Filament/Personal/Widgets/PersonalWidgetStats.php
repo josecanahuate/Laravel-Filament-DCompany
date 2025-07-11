@@ -38,9 +38,13 @@ class PersonalWidgetStats extends BaseWidget
         return $totalAproved;
     }
 
+
+    //OBTENIENDO LAS HORAS TRABAJADAS EN EL DIA PRESENTE
     protected function getTotalWorks(User $user){
         $totalWorks = Timesheet::where('user_id', $user->id)
-        ->where('type', 'work')->get();
+            ->where('type', 'work')
+            ->whereDate('created_at', Carbon::today())
+            ->get();
 
         $sumSeconds = 0;
         foreach ($totalWorks as $timesheet) {
@@ -48,18 +52,19 @@ class PersonalWidgetStats extends BaseWidget
             $finishTime = Carbon::parse($timesheet->day_out);
 
             $totalDuration = $finishTime->diffInSeconds($startTime);
-            $sumSeconds = $sumSeconds + $totalDuration;
-            //$totalHoursWorks = floor($sumSeconds / 3600);
-            $totalHoursWorks = gmdate("H:i:s", $sumSeconds);
-            //dd($totalDuration);
+            $sumSeconds += $totalDuration;
         }
+
+        $totalHoursWorks = gmdate("H:i:s", $sumSeconds);
 
         return $totalHoursWorks;
     }
 
+
+    //OBTENIENDO LAS HORAS PAUSADAS EN EL DIA PRESENTE
      protected function getTotalPause(User $user){
         $totalPause = Timesheet::where('user_id', $user->id)
-        ->where('type', 'pause')->get();
+        ->where('type', 'pause')->whereDate('created_at', Carbon::today())->get();
 
         $sumSeconds = 0;
         foreach ($totalPause as $timesheet) {
@@ -67,11 +72,11 @@ class PersonalWidgetStats extends BaseWidget
             $finishTime = Carbon::parse($timesheet->day_out);
 
             $totalDuration = $finishTime->diffInSeconds($startTime);
-            $sumSeconds = $sumSeconds + $totalDuration;
-            //$totalPauseWorks = floor($sumSeconds / 3600);
-            $totalPauseWorks = gmdate("H:i:s", $sumSeconds);
-            //dd($totalDuration);
+            $sumSeconds += $totalDuration;
         }
+        //$totalPauseWorks = floor($sumSeconds / 3600);
+        //dd($totalDuration);
+        $totalPauseWorks = gmdate("H:i:s", $sumSeconds);
 
         return $totalPauseWorks;
     }

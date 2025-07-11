@@ -27,6 +27,11 @@ class UserResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
 
+      public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
     //FORMULARIO
     public static function form(Form $form): Form
     {
@@ -44,6 +49,13 @@ class UserResource extends Resource
                     ->password()
                     ->hiddenOn('edit')
                     ->required(),
+                /* Forms\Components\Select::make('roles')
+                    ->relationship('roles', 'name')
+                    ->multiple()
+                    ->preload()
+                    ->searchable(), */
+                Forms\Components\CheckboxList::make('roles')
+                    ->relationship('roles', 'name')
                 ]),
 
                 Section::make('Address Info')

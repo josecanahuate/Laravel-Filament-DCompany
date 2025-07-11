@@ -24,6 +24,12 @@ class HolidayResource extends Resource
      return parent::getEloquentQuery()->where('user_id', Auth::user()->id);
     }
 
+    //badge menu vertical
+    public static function getNavigationBadge(): ?string
+    {
+     return parent::getEloquentQuery()->where('user_id', Auth::user()->id)->where('type', 'pending')->count();
+    }
+
     protected static ?string $navigationIcon = 'heroicon-o-calendar-days';
 
   public static function form(Form $form): Form

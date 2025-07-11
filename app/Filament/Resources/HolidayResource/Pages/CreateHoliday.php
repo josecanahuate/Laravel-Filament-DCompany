@@ -9,4 +9,6 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateHoliday extends CreateRecord
 {
     protected static string $resource = HolidayResource::class;
+
 }
+
